@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2> Movie Petitions </h2>
+    <a href="{% url 'movies.petition_create' %}" class="btn bg-dark text-white"> Create Petition </a>
+
+    {% for petition in template_data.petitions %}
+    <div class="card mt-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ petition.title }}</h5>
+            <p class="card-text">{{ petition.description }}</p>
+            <p class="card-text"><b>Votes:</b> {{ petition.votes.count }}</p>
+            {% if user.is_authenticated %}
+                {% if petition.user_voted %}
+                    <form method="post" action="{% url 'movies.petition_deleteVote' petition_id=petition.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Remove Vote</button>
+                    </form>
+                {% else %}
+                <form method="post" action="{% url 'movies.petition_vote' petition_id=petition.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Vote Yes</button>
+                </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <p>No petitions yet. <a href="{% url 'movies.petition_create' %}"> Create one </a></p>
+    {% endfor %}
+
+</div>
+
+{% endblock content %}

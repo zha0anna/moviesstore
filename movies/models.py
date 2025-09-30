@@ -18,3 +18,29 @@ class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     def __str__(self):
         return str(self.id) + ' - ' + self.movie.name
+    
+class Petition(models.Model):
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    def yesVotes(self):
+        return self.votes.filter(petition=self, vote_type='YES').count()
+    
+    def __str__(self):
+        return str(self.id) + ' - ' + self.title
+    
+class Vote(models.Model):
+    VOTE_TYPES = (
+        ('YES', 'Yes'),
+    )
+    id = models.AutoField(primary_key=True)
+    vote_type = models.CharField(max_length=3, choices=VOTE_TYPES)
+    petition = models.ForeignKey(Petition, related_name='votes', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('petition', 'user')
+    
+    def __str__(self):
+        return str(self.id) + ' - ' + self.vote_type + ' - ' + self.petition.title

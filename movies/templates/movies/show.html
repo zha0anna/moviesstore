@@ -49,8 +49,8 @@ href="{% url 'movies.delete_review' id=template_data.movie.id review_id=review.i
 </a>
 {% endif %}
 </li>
-{% endfor %}
-</ul>
+                {% endfor %}
+                </ul>
                 {% if user.is_authenticated %}
                 <div class="container mt-4">
                     <div class="row justify-content-center">
